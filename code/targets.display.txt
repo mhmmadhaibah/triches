@@ -1,0 +1,52 @@
+VIP SUMATRA CHEAT
+
+Information Menu
+  Anti Remote
+  Save Config
+  Load Config
+  Info Date : 
+  Info Time : 
+  Info FPS : 
+  Move Menu
+  Expired Time : 
+  HIDE MENU : 
+
+Mode Feature
+  [Visual Menu]
+    Crosshair
+    ESP Team
+    ESP Bone
+    ESP Line
+    ESP Name
+    ESP Box
+    ESP HealthNum
+    ESP HealthBar
+    ESP Head
+
+  [Assist Menu]
+
+  [Player Menu]
+    Lari Tuyul
+    HideNick
+    Anti GM
+    Always Invicible
+    Anti Out AFK
+    Anti ServerFull
+    AntiKick RM
+    Auto Ready
+
+  [Weapon Menu]
+    Accuracy ++
+    Auto Macro
+    - Type Weapon
+    - Setting Speed
+    Replace Accesory
+    QuickChange
+    FastReload
+    Recoil Vertical
+    Recoil Horizontal
+    Fire Speed
+    Reload Major
+    Weapon Camouflage
+
+0 Hours - 14 Minutes - 55 Seconds
