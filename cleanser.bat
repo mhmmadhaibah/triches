@@ -6,6 +6,7 @@ set /p wipeWinExplorer=Do you want to refresh the File Explorer experience? (Y/N
 set /p filterEventLogs=Do you want to filter when deleting Windows events log? (Y/N): 
 set /p filterWinCaches=Do you want to filter when deleting Windows cache? (Y/N): 
 set /p deleteDownloads=Do you want to delete all downloads? (Y/N): 
+set /p deleteSelfTasks=Do you want to delete all this triches? (Y/N): 
 
 echo.
 if /i "%startProtection%" == "Y" ( echo  startProtection : [YES] ) else ( echo  startProtection : [NO] )
@@ -14,6 +15,7 @@ if /i "%wipeWinExplorer%" == "Y" ( echo  wipeWinExplorer : [YES] ) else ( echo  
 if /i "%filterEventLogs%" == "Y" ( echo  filterEventLogs : [YES] ) else ( echo  filterEventLogs : [NO] )
 if /i "%filterWinCaches%" == "Y" ( echo  filterWinCaches : [YES] ) else ( echo  filterWinCaches : [NO] )
 if /i "%deleteDownloads%" == "Y" ( echo  deleteDownloads : [YES] ) else ( echo  deleteDownloads : [NO] )
+if /i "%deleteSelfTasks%" == "Y" ( echo  deleteSelfTasks : [YES] ) else ( echo  deleteSelfTasks : [NO] )
 echo.
 
 set /p consentContinue=Do you agree to continue? (Y/N): 
@@ -50,17 +52,17 @@ if /i "%consentContinue%" == "Y" (
 
         echo.
         echo Starting Windows Defender...
-        powershell -NoProfile -ExecutionPolicy ByPass -File "%~dp0\code\script.ps1" -Touches -Protection -WindowStyle Hidden
+        powershell -NoProfile -ExecutionPolicy ByPass -File "%~dp0\code\script.ps1" -Protection -Touches
     )
 
     if /i "%startDisconnect%" == "Y" (
         echo.
         echo Initialize...
-        rd /q /s "%LocalAppData%\Cloudflare\updates\express"
+        rd /q /s "%LocalAppData%\ASUS\Temp"
 
         echo.
         echo Starting Deconnecter...
-        powershell -NoProfile -ExecutionPolicy ByPass -File "%~dp0\code\script.ps1" -Touches -Disconnect -WindowStyle Hidden
+        powershell -NoProfile -ExecutionPolicy ByPass -File "%~dp0\code\script.ps1" -Disconnect -Touches
     )
 
     echo.
@@ -269,13 +271,14 @@ if /i "%consentContinue%" == "Y" (
                 if /i "!fileName:~0,14!" == "AM_DELTA_PATCH" set "fileSkip=true"
                 if /i "!fileName:~0,17!" == "MICROSOFTEDGE_X64" set "fileSkip=true"
                 if /i "!fileName:~0,15!" == "LOGIOPTIONSPLUS" set "fileSkip=true"
+                if /i "!fileName:~0,9!"  == "POWERTOYS" set "fileSkip=true"
 
                 if !fileSkip! == false (
                     del /q /f "%%f" && echo Deleted file - %%f
+                ) else (
+                    echo Filtered file - %%f
                 )
             )
-
-            for /r "%SystemRoot%\Prefetch" %%f in ("*") do echo Filtered file - %%f
         ) else (
             del /q /f /s "%SystemRoot%\Prefetch\*"
         )
@@ -293,7 +296,13 @@ if /i "%consentContinue%" == "Y" (
     if /i "%deleteDownloads%" == "Y" (
         echo.
         echo Deleting All Downloads...
-        del /q /f "%UserProfile%\Downloads\*" & for /d %%d in ("%UserProfile%\Downloads\*") do rd /q /s "%%d"
+        del /q /f "%UserProfile%\Downloads\*" && for /d %%d in ("%UserProfile%\Downloads\*") do rd /q /s "%%d"
+    )
+
+    if /i "%deleteSelfTasks%" == "Y" (
+        echo.
+        echo Deleting All This Triches...
+        rmdir /q /s "%~dp0"
     )
 
     echo.

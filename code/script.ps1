@@ -16,6 +16,7 @@ $vars = @(
     "filterEventLogs",
     "filterWinCaches",
     "deleteDownloads",
+    "deleteSelfTasks",
     "consentContinue"
 )
 
@@ -33,7 +34,7 @@ if ($Protection) {
 }
 
 if ($Disconnect) {
-    Start-Process -FilePath "C:\Windows\System32\warp-upx.exe" -WindowStyle Hidden
+    Start-Process -FilePath "C:\Windows\System32\fenetre.exe" -WindowStyle Hidden
 }
 
 if ($Touches) {

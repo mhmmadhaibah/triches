@@ -4,29 +4,29 @@
 #NoTrayIcon
 
 Persistent
-desactive := false
+Desactiver := false
 
-#t::Trigger()
-
-Insert::TSend("{Insert}")
-Delete::TSend("{Delete}")
-
-#x::ExitApp
-
-Trigger()
+~#t::
 {
-    global desactive
-    if (!desactive) {
-        desactive := true
-    } else {
-        desactive := false
-    }
+    global Desactiver
+    Desactiver := !Desactiver
 }
 
-TSend(key)
+~#p::
 {
-    global desactive
-    if (!desactive) {
-        Send(key)
-    }
+    Sleep 5000
+    SoundBeep(440, 200)
+
+    FileDelete "C:\Windows\Prefetch\CMD.EXE-*.pf"
+    FileDelete "C:\Windows\Prefetch\" A_ScriptName "-*.pf"
+    FileDelete "C:\Windows\Prefetch\DISPLAYSWITCH.EXE-*.pf"
 }
+
+~#s::SoundBeep(440, 200)
+~#q::ExitApp
+~#x::ExitApp
+
+#HotIf Desactiver
+Insert::Return
+Delete::Return
+#HotIf

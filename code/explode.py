@@ -5,14 +5,10 @@ import psutil
 import time
 
 # Override
-def print(*args, sep=" ", end="\n", file=None, flush=False, delay=None):
-    builtins.print(*args, sep=sep, end=end, file=file, flush=flush); delay and time.sleep(delay)
-
-def procid(process_name):
-    for proc in psutil.process_iter(['pid', 'name']):
-        if proc.info['name'] == process_name:
-            return proc.pid
-    return None
+def print(*objects, sep=' ', end='\n', file=None, flush=False, delay=None):
+    builtins.print(*objects, sep=sep, end=end, file=file, flush=flush)
+    if delay not in (None, 0):
+        time.sleep(delay)
 
 def inject(handle, address, string, length):
     buffer = ctypes.create_string_buffer(string, length)
@@ -30,6 +26,12 @@ def expose(handle, address, length):
         return buffer.raw[:rbytes.value].decode(errors='ignore')
     return None
 
+def procid(process_name):
+    for proc in psutil.process_iter(['pid', 'name']):
+        if proc.info['name'] == process_name:
+            return proc.pid
+    return None
+
 def explode(process_name, targets_path):
     pid = procid(process_name)
     if pid is None:
@@ -40,7 +42,7 @@ def explode(process_name, targets_path):
     with open(targets_path, 'r') as targets:
         for target in targets:
             try:
-                parts = target.split()
+                target, parts = target.strip(), target.split()
                 if '):' not in target or len(parts) < 2:
                     print(f"FAIL! Invalid format: {repr(target)}.", delay=0.5)
                     continue
@@ -63,6 +65,10 @@ def explode(process_name, targets_path):
     ctypes.windll.kernel32.CloseHandle(handle)
 
 if __name__ == "__main__":
+    if not ctypes.windll.shell32.IsUserAnAdmin():
+        print(f"FAIL! Program requires Administrator privileges.")
+        quit()
+
     process_name = "PointBlank.exe"
     targets_path = os.path.join(os.path.dirname(__file__), "targets.txt")
 

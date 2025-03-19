@@ -4,7 +4,7 @@
 "%ProgramFiles%\Python313\python.exe" "%~dp0\code\explode.py"
 
 echo.
-set "consent2Refresh=" && set /p consent2Refresh=Do you want to trigger again or exit? (Y/N): 
+set "consent2Refresh=" && set /p consent2Refresh=Do you want to trigger again? (Y/N): 
 
 if /i "%consent2Refresh%" == "Y" (
     cls & goto trigger
