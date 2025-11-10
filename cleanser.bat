@@ -70,6 +70,10 @@ if /i "%consentContinue%" == "Y" (
     timeout /t 5 /nobreak > nul
 
     echo.
+    echo Clearing Clipboard...
+    echo. | clip
+
+    echo.
     echo Clearing DNS Cache...
     ipconfig /flushdns
 
@@ -93,11 +97,14 @@ if /i "%consentContinue%" == "Y" (
     echo.
     echo Clearing Windows Run...
     reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU" /va /f
+    reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs" /va /f
+    reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\TypedPaths" /va /f
 
     if /i "%wipeWinExplorer%" == "Y" (
         echo.
         echo Clearing Save/Open MRU Lists...
         reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\OpenSavePidlMRU" /f
+        reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\LastVisitedPidlMRU" /f
 
         echo.
         echo Clearing Shell Bags...
@@ -132,10 +139,43 @@ if /i "%consentContinue%" == "Y" (
     wevtutil cl "System"
 
     echo.
+    echo Clearing Events Logs...
+    @REM for /f "tokens=*" %%d in ('wevtutil el') do (
+    @REM     if /i not "%%d" == "Application" wevtutil cl "%%d"
+    @REM )
+
+    echo.
     echo Deleting Protection History...
     del /q /f /s "%ProgramData%\Microsoft\Windows Defender\Scans\History\*"
     del /q /f /s "%ProgramData%\Microsoft\Windows Defender\Scans\mpcache-*"
     del /q /f /s "%ProgramData%\Microsoft\Windows Defender\Scans\mpenginedb.*"
+    del /q /f /s "%ProgramData%\Microsoft\Windows Defender\Support\*"
+
+    echo.
+    echo Clearing Windows Office...
+    reg delete "HKEY_CURRENT_USER\Software\Microsoft\Office\16.0\Excel\User MRU" /va /f
+    reg delete "HKEY_CURRENT_USER\Software\Microsoft\Office\16.0\Word\User MRU" /va /f
+    reg delete "HKEY_CURRENT_USER\Software\Microsoft\Office\16.0\PowerPoint\User MRU" /va /f
+
+    echo.
+    echo Deleting Files in %AppData%\Microsoft\Office\Recent...
+    del /q /f /s "%AppData%\Microsoft\Office\Recent\*"
+
+    echo.
+    echo Deleting Files in %AppData%\Microsoft\Windows\Recent\AutomaticDestinations...
+    @REM del /q /f /s "%AppData%\Microsoft\Windows\Recent\AutomaticDestinations\*"
+
+    echo.
+    echo Deleting Files in %AppData%\Microsoft\Windows\Recent\CustomDestinations...
+    @REM del /q /f /s "%AppData%\Microsoft\Windows\Recent\CustomDestinations\*"
+
+    echo.
+    echo Deleting Files in %AppData%\Microsoft\Windows\Recent...
+    @REM del /q /f /s "%AppData%\Microsoft\Windows\Recent\*"
+
+    echo.
+    echo Deleting Files in %ProgramData%\Microsoft\Windows\WER...
+    del /q /f /s "%ProgramData%\Microsoft\Windows\WER\*"
 
     echo.
     echo Deleting Files in %LocalAppData%\Microsoft\Windows\History...
@@ -152,6 +192,12 @@ if /i "%consentContinue%" == "Y" (
     echo.
     echo Deleting Folders in %temp%...
     for /d %%d in ("%temp%\*") do rd /q /s "%%d"
+
+    echo.
+    echo Deleting Media Cache...
+    @REM rmdir /q /s "%LocalAppData%\Packages\Microsoft.Windows.Photos_*"
+    @REM rmdir /q /s "%LocalAppData%\Microsoft\Media Player"
+    @REM rmdir /q /s "%AppData%\vlc"
 
     echo.
     echo Deleting Windows Cache...
