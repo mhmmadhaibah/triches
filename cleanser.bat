@@ -1,12 +1,20 @@
 @echo off
+net session >nul 2>&1
+if %errorlevel% neq 0 (
+    powershell -Command "Start-Process -FilePath '%~f0' -Verb RunAs"
+    exit /b
+)
 
-set /p startProtection=Do you want to activate the Windows defender? (Y/N): 
-set /p startDisconnect=Do you want to disconnect the Game application? (Y/N): 
-set /p wipeWinExplorer=Do you want to refresh the File Explorer experience? (Y/N): 
-set /p filterEventLogs=Do you want to filter when deleting Windows events log? (Y/N): 
-set /p filterWinCaches=Do you want to filter when deleting Windows cache? (Y/N): 
-set /p deleteDownloads=Do you want to delete all downloads? (Y/N): 
-set /p deleteSelfTasks=Do you want to delete all this triches? (Y/N): 
+set consentContinue=Y
+set wipeWinExplorer=Y
+
+set /p startProtection=Do you want to activate the Windows defender? [Y/N]: 
+set /p startDisconnect=Do you want to disconnect the Game application? [Y/N]: 
+set /p wipeWinExplorer=Do you want to refresh the File Explorer experience? [Y/N] (Default is "Y"): 
+set /p filterEventLogs=Do you want to filter when deleting Windows events log? [Y/N]: 
+set /p filterWinCaches=Do you want to filter when deleting Windows cache? [Y/N]: 
+set /p deleteDownloads=Do you want to delete all downloads? [Y/N]: 
+set /p deleteSelfTasks=Do you want to delete all this triches? [Y/N]: 
 
 echo.
 if /i "%startProtection%" == "Y" ( echo  startProtection : [YES] ) else ( echo  startProtection : [NO] )
@@ -18,7 +26,7 @@ if /i "%deleteDownloads%" == "Y" ( echo  deleteDownloads : [YES] ) else ( echo  
 if /i "%deleteSelfTasks%" == "Y" ( echo  deleteSelfTasks : [YES] ) else ( echo  deleteSelfTasks : [NO] )
 echo.
 
-set /p consentContinue=Do you agree to continue? (Y/N): 
+set /p consentContinue=Do you agree to continue? [Y/N] (Default is "Y"): 
 
 if /i "%consentContinue%" == "Y" (
     echo Starting the process...
@@ -88,6 +96,26 @@ if /i "%consentContinue%" == "Y" (
     echo.
     echo Clearing Git Bash...
     type nul > "%UserProfile%\.bash_history"
+
+    echo.
+    echo Clearing Media Player...
+    rmdir /q /s "%LocalAppData%\Packages\Microsoft.ZuneMusic_8wekyb3d8bbwe\LocalState"
+
+    echo.
+    echo Clearing Media Player...
+    reg delete "HKEY_CLASSES_ROOT\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData\Microsoft.ZuneMusic_8wekyb3d8bbwe\PersistedStorageItemTable\ManagedByApp" /f
+    reg delete "HKEY_CLASSES_ROOT\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData\Microsoft.ZuneMusic_8wekyb3d8bbwe\PersistedStorageItemTable\MostRecentlyUsed" /f
+    reg delete "HKEY_CURRENT_USER\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData\Microsoft.ZuneMusic_8wekyb3d8bbwe\PersistedStorageItemTable\ManagedByApp" /f
+    reg delete "HKEY_CURRENT_USER\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData\Microsoft.ZuneMusic_8wekyb3d8bbwe\PersistedStorageItemTable\MostRecentlyUsed" /f
+    reg delete "HKEY_USERS\S-1-5-21-1989540206-2653417282-4266741712-1002\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData\Microsoft.ZuneMusic_8wekyb3d8bbwe\PersistedStorageItemTable\ManagedByApp" /f
+    reg delete "HKEY_USERS\S-1-5-21-1989540206-2653417282-4266741712-1002\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData\Microsoft.ZuneMusic_8wekyb3d8bbwe\PersistedStorageItemTable\MostRecentlyUsed" /f
+    reg delete "HKEY_USERS\S-1-5-21-1989540206-2653417282-4266741712-1002_Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData\Microsoft.ZuneMusic_8wekyb3d8bbwe\PersistedStorageItemTable\ManagedByApp" /f
+    reg delete "HKEY_USERS\S-1-5-21-1989540206-2653417282-4266741712-1002_Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData\Microsoft.ZuneMusic_8wekyb3d8bbwe\PersistedStorageItemTable\MostRecentlyUsed" /f
+
+    echo.
+    echo Clearing OneDrive...
+    reg add "HKEY_CLASSES_ROOT\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v "System.IsPinnedToNameSpaceTree" /t REG_DWORD /d 0 /f
+    reg add "HKEY_CLASSES_ROOT\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v "System.IsPinnedToNameSpaceTree" /t REG_DWORD /d 0 /f
 
     echo.
     echo Clearing WinRAR...
